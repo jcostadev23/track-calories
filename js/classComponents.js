@@ -1,4 +1,5 @@
 const limitCaloriesEl = document.getElementById("calories-limit");
+const mealItems = document.getElementById("meal-items");
 
 class CalorieTracker {
   constructor() {
@@ -12,6 +13,7 @@ class CalorieTracker {
     this._displayCaloriesConsumed();
     this._displayCaloriesBurned();
     this._displayCaloriesRemaining();
+    this._displayMealItems();
   }
 
   addMeal(meal) {
@@ -68,11 +70,18 @@ class CalorieTracker {
     caloriesRemainingEl.innerHTML = remaining;
   }
 
+  _displayMealItems() {
+    this._meals.forEach((item) =>
+      mealItems.appendChild(mealCard(item.name, item.calories))
+    );
+  }
+
   _render() {
     this._displayCaloriesTotal();
     this._displayCaloriesConsumed();
     this._displayCaloriesBurned();
     this._displayCaloriesRemaining();
+    this._displayMealItems();
   }
 }
 

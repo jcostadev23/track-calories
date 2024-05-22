@@ -1,6 +1,7 @@
 const dailyLimit = document.getElementById("limit-form");
 const input = document.getElementById("limit");
 const resetDay = document.getElementById("reset");
+const addMealForm = document.getElementById("meal-form");
 
 const tracker = new CalorieTracker();
 
@@ -19,5 +20,17 @@ function setDailyValues(e) {
   tracker.resetDailyLimit(resetDaily);
 }
 
+function addMeal(e) {
+  e.preventDefault();
+  const meal = document.getElementById("meal-name");
+  const calory = document.getElementById("meal-calories");
+
+  const addMeal = new Meal(meal.value, calory.value);
+  tracker.addMeal(addMeal);
+  meal.value = "";
+  calory.value = "";
+}
+
 dailyLimit.addEventListener("submit", setDailyValues);
 resetDay.addEventListener("click", setDailyValues);
+addMealForm.addEventListener("submit", addMeal);
