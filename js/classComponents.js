@@ -1,4 +1,8 @@
+const caloriesRemainingEl = document.getElementById("calories-remaining");
+const caloriesConsumedEl = document.getElementById("calories-consumed");
+const caloriesBurnedEl = document.getElementById("calories-burned");
 const limitCaloriesEl = document.getElementById("calories-limit");
+const totalCaloriesEl = document.getElementById("calories-total");
 const mealItems = document.getElementById("meal-items");
 
 class CalorieTracker {
@@ -8,12 +12,7 @@ class CalorieTracker {
     this._workouts = [];
     this._meals = [];
 
-    this._displayCaloriesTotal();
-    this._displayCaloriesLimit();
-    this._displayCaloriesConsumed();
-    this._displayCaloriesBurned();
-    this._displayCaloriesRemaining();
-    this._displayMealItems();
+    this._render();
   }
 
   addMeal(meal) {
@@ -29,14 +28,12 @@ class CalorieTracker {
   }
 
   resetDailyLimit(limit) {
-    limitCaloriesEl.innerHTML = limit.daily;
     this._calorieLimit = limit.daily;
     this._totalCalories = limit.totalCalories;
     this._render();
   }
 
   _displayCaloriesTotal() {
-    const totalCaloriesEl = document.getElementById("calories-total");
     totalCaloriesEl.innerHTML = this._totalCalories;
   }
 
@@ -45,7 +42,6 @@ class CalorieTracker {
   }
 
   _displayCaloriesConsumed() {
-    const caloriesConsumedEl = document.getElementById("calories-consumed");
     const consumed = this._meals.reduce(
       (total, meal) => total + meal.calories,
       0
@@ -54,7 +50,6 @@ class CalorieTracker {
   }
 
   _displayCaloriesBurned() {
-    const caloriesBurnedEl = document.getElementById("calories-burned");
     const burned = this._workouts.reduce(
       (total, workout) => total + workout.calories,
       0
@@ -64,7 +59,6 @@ class CalorieTracker {
   }
 
   _displayCaloriesRemaining() {
-    const caloriesRemainingEl = document.getElementById("calories-remaining");
     const remaining = this._calorieLimit - this._totalCalories;
 
     caloriesRemainingEl.innerHTML = remaining;
@@ -77,10 +71,12 @@ class CalorieTracker {
   }
 
   _render() {
-    this._displayCaloriesTotal();
+    limitCaloriesEl.innerHTML = limit.daily;
+    this._displayCaloriesRemaining();
     this._displayCaloriesConsumed();
     this._displayCaloriesBurned();
-    this._displayCaloriesRemaining();
+    this._displayCaloriesTotal();
+    this._displayCaloriesLimit();
     this._displayMealItems();
   }
 }

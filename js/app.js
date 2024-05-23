@@ -1,36 +1,50 @@
-const dailyLimit = document.getElementById("limit-form");
-const input = document.getElementById("limit");
-const resetDay = document.getElementById("reset");
-const addMealForm = document.getElementById("meal-form");
+class App {
+  constructor() {
+    this.dailyLimit = document.getElementById("limit-form");
+    this.addMealForm = document.getElementById("meal-form");
+    this.resetDay = document.getElementById("reset");
 
-const tracker = new CalorieTracker();
+    this.tracker = new CalorieTracker();
+    this.addMeal = this.addMeal.bind(this);
+    this.setDailyValues = this.setDailyValues.bind(this);
 
-const breakfast = new Meal("Breakfast", 400);
-const lunch = new Meal("Lunch", 500);
-tracker.addMeal(breakfast);
-tracker.addMeal(lunch);
+    this.dailyLimit.addEventListener("submit", this.setDailyValues);
+    this.resetDay.addEventListener("click", this.setDailyValues);
+    this.addMealForm.addEventListener("submit", this.addMeal);
+  }
 
-const run = new Workout("Morning run", 330);
-tracker.addWorkout(run);
+  setDailyValues(e) {
+    e.preventDefault();
+    const input = document.getElementById("limit");
 
-function setDailyValues(e) {
-  e.preventDefault();
+    if (!input.value) {
+      return alert("You need to add Calorie Limit");
+    }
 
-  const resetDaily = new ResetValues(input.value, 0);
-  tracker.resetDailyLimit(resetDaily);
+    const resetDaily = new ResetValues(input.value, 0);
+    this.tracker.resetDailyLimit(resetDaily);
+    input.value = 0;
+  }
+
+  addMeal(e) {
+    e.preventDefault();
+    const meal = document.getElementById("meal-name");
+    const calory = document.getElementById("meal-calories");
+
+    if (!meal.value || !calory.value) {
+      return alert("Need to Fill all the sections");
+    }
+
+    const addMeal = new Meal(
+      meal.value[0].toUpperCase() + meal.value.slice(1),
+      parseInt(calory.value)
+    );
+    this.tracker.addMeal(addMeal);
+    meal.value = "";
+    calory.value = "";
+  }
 }
 
-function addMeal(e) {
-  e.preventDefault();
-  const meal = document.getElementById("meal-name");
-  const calory = document.getElementById("meal-calories");
-
-  const addMeal = new Meal(meal.value, calory.value);
-  tracker.addMeal(addMeal);
-  meal.value = "";
-  calory.value = "";
-}
-
-dailyLimit.addEventListener("submit", setDailyValues);
-resetDay.addEventListener("click", setDailyValues);
-addMealForm.addEventListener("submit", addMeal);
+document.addEventListener("DOMContentLoaded", () => {
+  const app = new App();
+});
