@@ -5,44 +5,62 @@ const limitCaloriesEl = document.getElementById("calories-limit");
 const totalCaloriesEl = document.getElementById("calories-total");
 const mealItems = document.getElementById("meal-items");
 
-class CalorieTracker {
+class State {
   constructor() {
-    this._calorieLimit = 2000;
-    this._totalCalories = 0;
-    this._workouts = [];
-    this._meals = [];
+    this.state = {
+      _calorieLimit: 2000,
+      _totalCalories: 0,
+      _workouts: [],
+      _meals: [],
+    };
+  }
 
-    this._render();
+  _render() {
+    console.log("No State a fazer update");
+  }
+}
+
+class CalorieTracker extends State {
+  constructor() {
+    super();
   }
 
   addMeal(meal) {
-    this._meals.push(meal);
-    this._totalCalories += meal.calories;
-    this._render();
+    this.setState({
+      _meals: [...this.state._meals, meal],
+      _totalCalories: (this.state._totalCalories += meal.calories),
+    });
   }
 
   addWorkout(workout) {
-    this._workouts.push(workout);
-    this._totalCalories -= workout.calories;
-    this._render();
+    this.setState({
+      _workouts: [...this.state._workouts, workout],
+      _totalCalories: (this.state._totalCalories -= workout.calories),
+    });
   }
 
   resetDailyLimit(limit) {
-    this._calorieLimit = limit.daily;
-    this._totalCalories = limit.totalCalories;
+    this.setState({
+      _calorieLimit: limit.daily,
+      _totalCalories: limit.totalCalories,
+    });
+  }
+
+  setState(newState) {
+    this.state = { ...this.state, ...newState };
     this._render();
   }
 
   _displayCaloriesTotal() {
-    totalCaloriesEl.innerHTML = this._totalCalories;
+    totalCaloriesEl.innerHTML = this.state._totalCalories;
   }
 
   _displayCaloriesLimit() {
-    limitCaloriesEl.innerHTML = this._calorieLimit;
+    limitCaloriesEl.innerHTML = this.state._calorieLimit;
   }
 
   _displayCaloriesConsumed() {
-    const consumed = this._meals.reduce(
+    const consumed = this.state._meals.reduce(
       (total, meal) => total + meal.calories,
       0
     );
@@ -50,7 +68,7 @@ class CalorieTracker {
   }
 
   _displayCaloriesBurned() {
-    const burned = this._workouts.reduce(
+    const burned = this.state._workouts.reduce(
       (total, workout) => total + workout.calories,
       0
     );
@@ -59,13 +77,14 @@ class CalorieTracker {
   }
 
   _displayCaloriesRemaining() {
-    const remaining = this._calorieLimit - this._totalCalories;
+    const remaining = this.state._calorieLimit - this.state._totalCalories;
 
     caloriesRemainingEl.innerHTML = remaining;
   }
 
   _displayMealItems() {
-    this._meals.forEach((item) =>
+    mealItems.innerHTML = "";
+    this.state._meals.forEach((item) =>
       mealItems.appendChild(mealCard(item.name, item.calories))
     );
   }
