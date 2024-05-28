@@ -3,7 +3,9 @@ const caloriesConsumedEl = document.getElementById("calories-consumed");
 const caloriesBurnedEl = document.getElementById("calories-burned");
 const limitCaloriesEl = document.getElementById("calories-limit");
 const totalCaloriesEl = document.getElementById("calories-total");
+const progressEl = document.getElementById("calorie-progress");
 const mealItems = document.getElementById("meal-items");
+const workoutItems = document.getElementById("workout-items");
 
 class State {
   constructor() {
@@ -78,7 +80,23 @@ class CalorieTracker extends State {
 
   _displayCaloriesRemaining() {
     const remaining = this.state._calorieLimit - this.state._totalCalories;
-
+    if (remaining <= 0) {
+      caloriesRemainingEl.parentElement.parentElement.classList.remove(
+        "bg-light"
+      );
+      caloriesRemainingEl.parentElement.parentElement.classList.add(
+        "bg-danger"
+      );
+      progressEl.classList.remove("bg-success");
+      progressEl.classList.add("bg-danger");
+    } else {
+      caloriesRemainingEl.parentElement.parentElement.classList.remove(
+        "bg-danger"
+      );
+      caloriesRemainingEl.parentElement.parentElement.classList.add("bg-light");
+      progressEl.classList.remove("bg-danger");
+      progressEl.classList.add("bg-success");
+    }
     caloriesRemainingEl.innerHTML = remaining;
   }
 
@@ -89,6 +107,20 @@ class CalorieTracker extends State {
     );
   }
 
+  _displayWorkoutItems() {
+    workoutItems.innerHTML = "";
+    this.state._workouts.forEach((item) =>
+      workoutItems.appendChild(mealCard(item.name, item.calories))
+    );
+  }
+
+  _displayCaloriesProgress() {
+    const percentage =
+      (this.state._totalCalories / this.state._calorieLimit) * 100;
+    const width = Math.min(percentage, 100);
+    progressEl.style.width = `${width}%`;
+  }
+
   _render() {
     limitCaloriesEl.innerHTML = limit.daily;
     this._displayCaloriesRemaining();
@@ -97,6 +129,8 @@ class CalorieTracker extends State {
     this._displayCaloriesTotal();
     this._displayCaloriesLimit();
     this._displayMealItems();
+    this._displayCaloriesProgress();
+    this._displayWorkoutItems();
   }
 }
 
