@@ -43,6 +43,30 @@ class CalorieTracker extends ReactCosta {
     });
   }
 
+  removeMeal(id) {
+    const index = this.state._meals.findIndex((meal) => meal.id === id);
+
+    if (index !== -1) {
+      const meal = this.state._meals[index];
+      this.state._totalCalories -= meal.calories;
+      this.state._meals.splice(index, 1);
+      this.render();
+    }
+  }
+
+  removeWorkout(id) {
+    const index = this.state._workouts.findIndex(
+      (workout) => workout.id === id
+    );
+
+    if (index !== -1) {
+      const workout = this.state._workouts[index];
+      this.state._totalCalories += workout.calories;
+      this.state._workouts.splice(index, 1);
+      this.render();
+    }
+  }
+
   resetDailyLimit(limit) {
     this.setState({
       _calorieLimit: limit.daily,
@@ -99,15 +123,15 @@ class CalorieTracker extends ReactCosta {
 
   _displayMealItems() {
     mealItems.innerHTML = "";
-    this.state._meals.forEach((item) =>
-      mealItems.appendChild(mealCard(item.name, item.calories))
+    this.state._meals.forEach((item, index) =>
+      mealItems.appendChild(mealCard(item, item.calories, index))
     );
   }
 
   _displayWorkoutItems() {
     workoutItems.innerHTML = "";
     this.state._workouts.forEach((item) =>
-      workoutItems.appendChild(mealCard(item.name, item.calories))
+      workoutItems.appendChild(mealCard(item, item.calories))
     );
   }
 

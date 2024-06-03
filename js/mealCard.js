@@ -1,9 +1,10 @@
-function mealCard(name, calories) {
+function mealCard(item, calories) {
   const h4 = document.createElement("h4");
   h4.classList.add("mx-1");
-  h4.textContent = name;
+  h4.textContent = item.name;
 
   const div = createDiv("card my-2");
+  div.setAttribute("data-id", item.id);
   const div2 = createDiv("card-body");
   const div3 = createDiv("d-flex align-items-center justify-content-between");
   div3.appendChild(h4);
