@@ -14,6 +14,12 @@ class App {
     this.resetDay.addEventListener("click", this.setDailyValues);
     this.addMealForm.addEventListener("submit", this.addMeal);
     this.addWorkoutForm.addEventListener("submit", this.addWorkout);
+    document
+      .getElementById("meal-items")
+      .addEventListener("click", this._removeItems.bind(this, "meal"));
+    document
+      .getElementById("workout-items")
+      .addEventListener("click", this._removeItems.bind(this, "workout"));
   }
 
   setDailyValues(e) {
@@ -63,6 +69,22 @@ class App {
     this.tracker.addWorkout(addWorkout);
     workout.value = "";
     calory.value = "";
+  }
+
+  _removeItems(type, e) {
+    if (
+      e.target.classList.contains("delete") ||
+      e.target.classList.contains("fa-xmark")
+    ) {
+      if (confirm("Are you sure")) {
+        const id = e.target.closest(".card").getAttribute("data-id");
+        type === "meal"
+          ? this.tracker.removeMeal(id)
+          : this.tracker.removeWorkout(id);
+
+        e.target.closest(".card").remove();
+      }
+    }
   }
 }
 
