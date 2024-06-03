@@ -22,7 +22,7 @@ class CalorieTracker extends ReactCosta {
   constructor() {
     super();
     this.state = {
-      _calorieLimit: 2000,
+      _calorieLimit: Storage.getCalorieLimit(),
       _totalCalories: 0,
       _workouts: [],
       _meals: [],
@@ -72,6 +72,7 @@ class CalorieTracker extends ReactCosta {
       _calorieLimit: limit.daily,
       _totalCalories: limit.totalCalories,
     });
+    Storage.setCalorieLimit(limit.daily);
   }
 
   _displayCaloriesTotal() {
@@ -176,5 +177,22 @@ class ResetValues {
     this.id = Math.random().toString(16);
     this.daily = calories;
     this.totalCalories = total;
+  }
+}
+
+class Storage {
+  static getCalorieLimit(defaultLimit = 2000) {
+    let calorieLimit;
+    if (localStorage.getItem("calorieLimit") === null) {
+      calorieLimit = defaultLimit;
+    } else {
+      calorieLimit = parseInt(localStorage.getItem("calorieLimit"));
+    }
+
+    return calorieLimit;
+  }
+
+  static setCalorieLimit(calorieLimit) {
+    localStorage.setItem("calorieLimit", calorieLimit);
   }
 }
