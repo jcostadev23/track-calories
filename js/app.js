@@ -27,12 +27,17 @@ class App {
     const input = document.getElementById("limit");
 
     if (!input.value) {
-      return alert("You need to add Calorie Limit");
+      alert("You need to add Calorie Limit");
+      return;
     }
 
     const resetDaily = new ResetValues(input.value, 0);
     this.tracker.resetDailyLimit(resetDaily);
     input.value = 0;
+
+    const modalEl = document.getElementById("limit-modal");
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    modal.hide();
   }
 
   addMeal(e) {
