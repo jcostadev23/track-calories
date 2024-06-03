@@ -7,24 +7,26 @@ const progressEl = document.getElementById("calorie-progress");
 const mealItems = document.getElementById("meal-items");
 const workoutItems = document.getElementById("workout-items");
 
-class State {
+class ReactCosta {
+  setState(newState) {
+    this.state = { ...this.state, ...newState };
+    this.render();
+  }
+
+  render() {
+    console.log("No State a fazer update");
+  }
+}
+
+class CalorieTracker extends ReactCosta {
   constructor() {
+    super();
     this.state = {
       _calorieLimit: 2000,
       _totalCalories: 0,
       _workouts: [],
       _meals: [],
     };
-  }
-
-  _render() {
-    console.log("No State a fazer update");
-  }
-}
-
-class CalorieTracker extends State {
-  constructor() {
-    super();
   }
 
   addMeal(meal) {
@@ -46,11 +48,6 @@ class CalorieTracker extends State {
       _calorieLimit: limit.daily,
       _totalCalories: limit.totalCalories,
     });
-  }
-
-  setState(newState) {
-    this.state = { ...this.state, ...newState };
-    this._render();
   }
 
   _displayCaloriesTotal() {
@@ -121,7 +118,7 @@ class CalorieTracker extends State {
     progressEl.style.width = `${width}%`;
   }
 
-  _render() {
+  render() {
     limitCaloriesEl.innerHTML = limit.daily;
     this._displayCaloriesRemaining();
     this._displayCaloriesConsumed();
