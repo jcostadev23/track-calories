@@ -36,10 +36,6 @@ class App {
 
     const resetDaily = new ResetValues(input.value, 0);
     this.tracker.resetDailyLimit(resetDaily);
-
-    const modalEl = document.getElementById("limit-modal");
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    modal.hide();
   }
 
   addMeal(e) {
@@ -55,6 +51,7 @@ class App {
       meal.value[0].toUpperCase() + meal.value.slice(1),
       parseInt(calory.value)
     );
+
     this.tracker.addMeal(addMeal);
     meal.value = "";
     calory.value = "";
