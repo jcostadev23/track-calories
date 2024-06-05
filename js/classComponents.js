@@ -22,11 +22,21 @@ class CalorieTracker extends ReactCosta {
   constructor() {
     super();
     this.state = {
-      _calorieLimit: Storage.getCalorieLimit(),
-      _totalCalories: Storage.getTotalCalories(0),
+      _calorieLimit: 0,
+      _totalCalories: 0,
       _workouts: [],
       _meals: [],
     };
+
+    this.setState({
+      _calorieLimit: Storage.getCalorieLimit(),
+      _totalCalories: Storage.getTotalCalories(),
+      _workouts: Storage.getWorkouts(),
+      _meals: Storage.getMeals(),
+    });
+
+    this._displayMealItems();
+    this._displayWorkoutItems();
   }
 
   addMeal(meal) {
@@ -34,7 +44,10 @@ class CalorieTracker extends ReactCosta {
       _meals: [...this.state._meals, meal],
       _totalCalories: (this.state._totalCalories += meal.calories),
     });
-    Storage.updateTotalCalories(this.state._totalCalories);
+
+    Storage.updateTotalCalories((this.state._totalCalories += meal.calories));
+    Storage.saveMeal(meal);
+    this._displayMealItems();
   }
 
   addWorkout(workout) {
@@ -42,7 +55,13 @@ class CalorieTracker extends ReactCosta {
       _workouts: [...this.state._workouts, workout],
       _totalCalories: (this.state._totalCalories -= workout.calories),
     });
-    Storage.updateTotalCalories(this.state._totalCalories);
+
+    Storage.updateTotalCalories(
+      (this.state._totalCalories -= workout.calories)
+    );
+    Storage.saveWorkout(workout);
+
+    this._displayWorkoutItems();
   }
 
   removeMeal(id) {
@@ -53,6 +72,7 @@ class CalorieTracker extends ReactCosta {
       this.state._totalCalories -= meal.calories;
       Storage.updateTotalCalories(this.state._totalCalories);
       this.state._meals.splice(index, 1);
+      Storage.removeMeal(id);
       this.render();
     }
   }
@@ -67,6 +87,7 @@ class CalorieTracker extends ReactCosta {
       this.state._totalCalories += workout.calories;
       Storage.updateTotalCalories(this.state._totalCalories);
       this.state._workouts.splice(index, 1);
+      Storage.removeWorkout(id);
       this.render();
     }
   }
@@ -148,15 +169,12 @@ class CalorieTracker extends ReactCosta {
   }
 
   render() {
-    limitCaloriesEl.innerHTML = limit.daily;
     this._displayCaloriesRemaining();
     this._displayCaloriesConsumed();
     this._displayCaloriesBurned();
     this._displayCaloriesTotal();
     this._displayCaloriesLimit();
-    this._displayMealItems();
     this._displayCaloriesProgress();
-    this._displayWorkoutItems();
   }
 }
 
@@ -181,6 +199,7 @@ class ResetValues {
     this.id = Math.random().toString(16);
     this.daily = calories;
     this.totalCalories = total;
+    Storage.clearLocalStorage();
   }
 }
 
@@ -213,5 +232,65 @@ class Storage {
 
   static updateTotalCalories(calories) {
     localStorage.setItem("totalCalories", calories);
+  }
+
+  static getMeals() {
+    let meals;
+    if (localStorage.getItem("meals") === null) {
+      meals = [];
+    } else {
+      meals = JSON.parse(localStorage.getItem("meals"));
+    }
+
+    return meals;
+  }
+
+  static saveMeal(meal) {
+    const meals = Storage.getMeals();
+    meals.push(meal);
+    localStorage.setItem("meals", JSON.stringify(meals));
+  }
+
+  static removeMeal(id) {
+    const meals = Storage.getMeals();
+    meals.forEach((meal, index) => {
+      if (meal.id === id) {
+        meals.splice(index, 1);
+      }
+    });
+
+    localStorage.setItem("meals", JSON.stringify(meals));
+  }
+
+  static getWorkouts() {
+    let workouts;
+    if (localStorage.getItem("workouts") === null) {
+      workouts = [];
+    } else {
+      workouts = JSON.parse(localStorage.getItem("workouts"));
+    }
+
+    return workouts;
+  }
+
+  static saveWorkout(workout) {
+    const workouts = Storage.getWorkouts();
+    workouts.push(workout);
+    localStorage.setItem("workouts", JSON.stringify(workouts));
+  }
+
+  static removeWorkout(id) {
+    const workouts = Storage.getWorkouts();
+    workouts.forEach((workout, index) => {
+      if (workout.id === id) {
+        workouts.splice(index, 1);
+      }
+    });
+
+    localStorage.setItem("workouts", JSON.stringify(workouts));
+  }
+
+  static clearLocalStorage() {
+    localStorage.clear();
   }
 }

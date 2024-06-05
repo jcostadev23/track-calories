@@ -9,7 +9,10 @@ class App {
     this.addMeal = this.addMeal.bind(this);
     this.setDailyValues = this.setDailyValues.bind(this);
     this.addWorkout = this.addWorkout.bind(this);
+    this._loadEventListeners();
+  }
 
+  _loadEventListeners() {
     this.dailyLimit.addEventListener("submit", this.setDailyValues);
     this.resetDay.addEventListener("click", this.setDailyValues);
     this.addMealForm.addEventListener("submit", this.addMeal);
@@ -33,10 +36,6 @@ class App {
 
     const resetDaily = new ResetValues(input.value, 0);
     this.tracker.resetDailyLimit(resetDaily);
-
-    const modalEl = document.getElementById("limit-modal");
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    modal.hide();
   }
 
   addMeal(e) {
@@ -52,6 +51,7 @@ class App {
       meal.value[0].toUpperCase() + meal.value.slice(1),
       parseInt(calory.value)
     );
+
     this.tracker.addMeal(addMeal);
     meal.value = "";
     calory.value = "";
