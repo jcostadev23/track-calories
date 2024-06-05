@@ -24,8 +24,8 @@ class CalorieTracker extends ReactCosta {
     this.state = {
       _calorieLimit: Storage.getCalorieLimit(),
       _totalCalories: Storage.getTotalCalories(0),
-      _workouts: [],
-      _meals: [],
+      _workouts: Storage.getWorkouts(),
+      _meals: Storage.getMeals(),
     };
   }
 
@@ -35,6 +35,7 @@ class CalorieTracker extends ReactCosta {
       _totalCalories: (this.state._totalCalories += meal.calories),
     });
     Storage.updateTotalCalories(this.state._totalCalories);
+    Storage.saveMeal(meal);
   }
 
   addWorkout(workout) {
@@ -43,6 +44,7 @@ class CalorieTracker extends ReactCosta {
       _totalCalories: (this.state._totalCalories -= workout.calories),
     });
     Storage.updateTotalCalories(this.state._totalCalories);
+    Storage.saveWorkout(workout);
   }
 
   removeMeal(id) {
@@ -213,5 +215,28 @@ class Storage {
 
   static updateTotalCalories(calories) {
     localStorage.setItem("totalCalories", calories);
+  }
+
+  static getMeals() {
+    let meals;
+    if (localStorage.getItem("meals") === null) {
+      meals = [];
+    } else {
+      meals = JSON.parse(localStorage.getItem("meals"));
+    }
+
+    return meals;
+  }
+
+  static saveMeal(meal) {
+    const meals = Storage.getMeals();
+    meals.push(meal);
+    localStorage.setItem("meals", JSON.stringify(meals));
+  }
+
+  static saveWorkout(workout) {
+    const workouts = Storage.getMeals();
+    workouts.push(workout);
+    localStorage.setItem("workouts", JSON.stringify(workouts));
   }
 }

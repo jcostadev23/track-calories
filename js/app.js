@@ -9,7 +9,10 @@ class App {
     this.addMeal = this.addMeal.bind(this);
     this.setDailyValues = this.setDailyValues.bind(this);
     this.addWorkout = this.addWorkout.bind(this);
+    this._loadEventListeners();
+  }
 
+  _loadEventListeners() {
     this.dailyLimit.addEventListener("submit", this.setDailyValues);
     this.resetDay.addEventListener("click", this.setDailyValues);
     this.addMealForm.addEventListener("submit", this.addMeal);
