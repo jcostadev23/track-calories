@@ -23,7 +23,7 @@ class CalorieTracker extends ReactCosta {
     super();
     this.state = {
       _calorieLimit: Storage.getCalorieLimit(),
-      _totalCalories: 0,
+      _totalCalories: Storage.getTotalCalories(0),
       _workouts: [],
       _meals: [],
     };
@@ -34,6 +34,7 @@ class CalorieTracker extends ReactCosta {
       _meals: [...this.state._meals, meal],
       _totalCalories: (this.state._totalCalories += meal.calories),
     });
+    Storage.updateTotalCalories(this.state._totalCalories);
   }
 
   addWorkout(workout) {
@@ -41,6 +42,7 @@ class CalorieTracker extends ReactCosta {
       _workouts: [...this.state._workouts, workout],
       _totalCalories: (this.state._totalCalories -= workout.calories),
     });
+    Storage.updateTotalCalories(this.state._totalCalories);
   }
 
   removeMeal(id) {
@@ -49,6 +51,7 @@ class CalorieTracker extends ReactCosta {
     if (index !== -1) {
       const meal = this.state._meals[index];
       this.state._totalCalories -= meal.calories;
+      Storage.updateTotalCalories(this.state._totalCalories);
       this.state._meals.splice(index, 1);
       this.render();
     }
@@ -62,6 +65,7 @@ class CalorieTracker extends ReactCosta {
     if (index !== -1) {
       const workout = this.state._workouts[index];
       this.state._totalCalories += workout.calories;
+      Storage.updateTotalCalories(this.state._totalCalories);
       this.state._workouts.splice(index, 1);
       this.render();
     }
@@ -194,5 +198,20 @@ class Storage {
 
   static setCalorieLimit(calorieLimit) {
     localStorage.setItem("calorieLimit", calorieLimit);
+  }
+
+  static getTotalCalories(defaultCalories = 0) {
+    let totalCalories;
+    if (localStorage.getItem("totalCalories") === null) {
+      totalCalories = defaultCalories;
+    } else {
+      totalCalories = parseInt(localStorage.getItem("totalCalories"));
+    }
+
+    return totalCalories;
+  }
+
+  static updateTotalCalories(calories) {
+    localStorage.setItem("totalCalories", calories);
   }
 }
